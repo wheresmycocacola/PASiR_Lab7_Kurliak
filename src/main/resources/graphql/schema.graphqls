@@ -1,0 +1,107 @@
+type Query {
+    groups: [Group]
+    myGroups: [GroupResponse]
+    groupMembers(groupId: ID!): [Membership]
+    groupDebts(groupId: ID!): [Debt]
+    transactions: [Transaction]
+    userBalance(days: Float): BalanceDTO
+}
+
+type Mutation {
+    createGroup(groupDTO: GroupInput): GroupResponse
+    deleteGroup(id: ID): Boolean
+    addMember(membershipDTO: MembershipInput): Membership
+    removeMember(membershipId: ID): Boolean
+    addGroupTransaction(groupTransactionDTO: GroupTransactionInput): Boolean
+    createDebt(debtDTO: DebtInput): Debt
+    deleteDebt(debtId: ID): Boolean
+    markDebtAsPaid(debtId: ID): Debt
+    confirmDebtPayment(debtId: ID): Debt
+
+    addTransaction(transactionDTO: TransactionDTOInput): Transaction
+    updateTransaction(id: ID, transactionDTO: TransactionDTOInput): Transaction
+    deleteTransaction(id: ID): Boolean
+}
+
+type Group {
+    id: ID
+    name: String
+    ownerId: ID
+}
+
+type GroupResponse {
+    id: ID
+    name: String
+    ownerId: ID
+}
+
+type Membership {
+    id: ID
+    userId: ID
+    groupId: ID
+    userEmail: String
+}
+
+type Debt {
+    id: ID
+    title: String
+    amount: Float
+    paidByDebtor: Boolean
+    confirmedByCreditor: Boolean
+    debtor: User
+    creditor: User
+}
+
+type User {
+    id: ID
+    username: String
+    email: String
+    currency: String
+}
+
+type Transaction {
+    id: ID
+    amount: Float
+    type: String
+    tags: String
+    notes: String
+    timestamp: String
+}
+
+type BalanceDTO {
+    totalIncome: Float
+    totalExpense: Float
+    balance: Float
+}
+
+input GroupInput {
+    name: String
+}
+
+input TransactionDTOInput {
+    amount: Float
+    type: String
+    tags: String
+    notes: String
+}
+
+input MembershipInput {
+    userEmail: String
+    groupId: ID
+}
+
+input GroupTransactionInput {
+    groupId: ID
+    amount: Float
+    type: String
+    title: String
+    selectedUserIds: [ID]
+}
+
+input DebtInput {
+    debtorId: ID
+    creditorId: ID
+    groupId: ID
+    amount: Float
+    title: String
+}
